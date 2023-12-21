@@ -1,0 +1,8 @@
+INICIAR SESION EN EL EQUIPO CLIENTE 
+sudo apt install nslcd
+--->indicar valores
+ldap://ip_server
+dc=dom,dc=org
+
+REINICIAR PC
+iniciar sesion

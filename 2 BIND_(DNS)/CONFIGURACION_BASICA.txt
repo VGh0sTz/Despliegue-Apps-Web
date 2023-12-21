@@ -1,0 +1,61 @@
+(TODO SE ENCUENTRA DENTRO DE /ETC/BIND )
+el // es un comentario no cuenta
+
+
+1 EDITAR EL FICHERO DE ZONAS QUE TIENE DE SINTAXIS: 
+//directa
+
+zone "zona1.org"{
+  type master;
+  file "/donde/se/encuentra/el/db.zona1.org";
+}
+//inversa
+
+zone "1.33.10.in-addr.arpa"{
+  type master;
+  file "/donde/se/encuentra/el/db.10.33.1";
+}
+
+
+2 EDITAR LOS FICHEROS DE ZONA DIRECTA E INVERSA
+
+//directa
+
+$ORIGIN nombre_zona
+$TTL 5641021 
+@	IN	SOA  hostname.zona1.org. admin.zona1.org.(
+		 2001062501 ; serial
+                   21600      ; refresh after 6 hours
+                   3600       ; retry after 1 hour
+                   604800     ; expire after 1 week
+                   86400 )    ; minimum TTL of 1 day
+@	IN	NS	hostname.zona1.org.
+@	IN	MX	correo.zona1.org.
+hostname  IN  A  10.33.1.2 			//(ip ejemplo)
+www  IN  CNAME hostname
+
+//inversa
+
+$ORIGIN 1.33.10.in-addr.arpa.
+$TTL 86400
+@     IN     SOA    tunombre.iesaf.org.     admin.iesaf.org. (
+                   2001062501 ; serial
+                   21600      ; refresh after 6 hours
+                   3600       ; retry after 1 hour
+                   600     ; expire after 1 week
+                   86400 )    ; minimum TTL of 1 day
+@     IN     NS     tunombre.iesaf.org.
+2   IN     PTR    tunombre.iesaf.org.
+2   IN     PTR    correo.iesaf.org.
+2   IN     PTR    ftp.iesaf.org.
+3   IN     PTR    cliente1.iesaf.org.
+
+
+VERIFICAR AMBAS ZONAS 
+
+1.- sudo named-checkzone zona1.org /etc/bind/db.zona1.org
+
+2.- sudo named-checkzone 1.33.10.in-addr.arpa /etc/bind/db.10.33.1
+
+REINICIAR BIND 
+sudo systemctl restart bind9

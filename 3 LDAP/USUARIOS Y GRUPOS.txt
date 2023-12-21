@@ -1,0 +1,44 @@
+Crear 1 grupo en LDAP dentro de una unidad organizativa diferente que sean objetos del tipo groupOfNames.
+
+Creamos el fichero “/etc/ldap/grupos.ldif” y le añadimos el siguiente contenido:
+nano /etc/ldap/grupos.ldif
+dn: cn=r&d,ou=grupos,dc=iesaf,dc=org
+objectClass: posixGroup
+cn: r&d
+gidNumber: 11000
+memberUid: r&d
+
+Añadimos los grupos creados a LDAP:
+ldapadd -x -D "cn=admin,dc=iesaf,dc=org" -W -f /etc/ldap/grupos.ldif
+
+Para crear las contraseñas de los usuarios:
+sudo slappasswd -v
+
+Creamos el fichero donde irán todos los usuarios, “/etc/ldap/usuarios.ldif” y añadimos lo siguiente:
+nano /etc/ldap/usuarios.ldif
+dn: uid=cindy,ou=usuarios,dc=iesaf,dc=org
+objectClass: top
+objectClass: posixAccount
+objectClass: inetOrgPerson
+cn: Cindy Kim
+sn: Kim
+uid: cindy
+uidNumber: 10001
+gidNumber: 11000
+homeDirectory: /home/cindy
+loginShell: /bin/bash
+userPassword: {SSHA}+WUt2/lu5IKTpD+rBMtcjbdJEtGY+n3e
+mail: cindy@gmail.com
+givenName: cindy
+memberOf: cn=r&d,ou=grupos,dc=iesaf,dc=org
+
+A continuación añadirlos a ldap:
+ldapadd -x -D "cn=admin,dc=iesaf,dc=org" -W -f /etc/ldap/usuarios.ldif
+
+//EN CASO DE TENER QUE ELMINAR A UN USUARIO DEBEMOS PRIMERO ELIMINAR SU REGISTRO DEL GRUPO
+modificar fichero usuarios.ldif
+memberOf: cn=r&d,ou=grupos,dc=iesaf,dc=org
+ldapdelete -W -D "cn=admin,dc=iesaf,dc=org" "uid=cindy,ou=usuarios,dc=iesaf,dc=org" 
+ldapsearch -x -b "dc=iesaf,dc=org" “uid=cindy”
+systemctl restart slapd
+ldapadd -x -D "cn=admin,dc=iesaf,dc=org" -W -f /etc/ldap/usuarios.ldif

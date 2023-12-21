@@ -1,0 +1,40 @@
+SSH HACE CONTROL Y DATOS POR EL MISMO PUERTO (22)
+
+UTILIZACIÓN POR TERMINAL (O PROGRAMAS EXTERNOS)
+
+//INSTALACION DE OPENSSH
+sudo apt update
+sudo apt install openssh-server
+sudo systemctl status ssh
+sudo ufw allow ssh (puede que se habilite cuando descarges openssh)
+
+//CONFIGURAR SSHD_CONFIG
+RSAAuthentication yes
+PubkeyAuthentication yes
+AuthorizedKeysFile %h/.ssh/authorized_keys
+PasswordAuthentication yes
+
+(DESPUES REINICIAR SERVICIO--> systemctl restart SSH.service)
+
+//GENERAR CLAVES
+ssh-keygen -t (rsa/dsa)
+Enter file .... (no se pone nada ya esta configurado)
+enter passphrase (contraseña de la contraseña [algo de lo que te acuerdes ])
+se guardarán en : /home/usuario/.ssh/
+
+//CONECTARSE AL SSH (como estar en el pc)
+ssh (usuario_que_creó_las_claves)@(ip_servidor)
+
+//QUITAR CONTRASEÑA (/TODO DESDE EL MISMO USUARIO QUE CREO LAS SSH)
+configurar SSHD_CONFIG poniendo PasswordAuthentication no
+no podremos conectarnos pues dara un error Permission denied (publickey)
+
+//CONECTARSE POR SFTP
+sftp (ip_server)
+o
+FILEZILLA
+
+//EXPORTAR CLAVE SSH PARA CONECTARSE SIN CONTRASEÑA
+1.- ssh-copy-id (usuario_que_creó_las_claves)@(ip_server)
+2.- configurar SSHD_CONFIG poniendo PasswordAuthentication no
+3.- ssh (usuario_que_creó_las_claves)@(ip_server)

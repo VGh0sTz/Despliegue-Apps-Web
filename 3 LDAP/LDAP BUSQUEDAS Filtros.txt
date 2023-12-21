@@ -1,0 +1,57 @@
+BUSQUEDA CON ADMINISTRADOR
+Para buscar LDAP usando la cuenta de administrador, debe ejecutar la consulta» ldapsearch «con la opción»- D «para el DN de enlace y el»- W » para que se le solicite la contraseña
+ldapadd -x -D "cn=admin,dc=iesaf,dc=org" -W -f /etc/ldap/usuarios.ldif
+
+EJEMPLO:
+$ ldapsearch -x -b "dc=iesaf,dc=org" -H ldap://10.33.1.2 -D "cn=admin,dc=iesaf,dc=org" -W
+FIJATE!!! En el resto de la actividad para realizar nuestras búsquedas:
+<search_base> → "dc=iesaf,dc=org"
+<ldap_host> →  ldap://10.33.1.2
+<bind_dn> →  "cn=admin,dc=iesaf,dc=org"
+
+
+BUSQUEDA CON FILTRO 
+$ ldapsearch <previous_options> "(object_type)=(object_value)" <optional_attributes>
+
+Para devolver todos los objetos disponibles en el árbol LDAP, puede añadir el filtro «clase de objeto» y un carácter comodín «*» para especificar que desea devolver todos los objetos.
+$ ldapsearch -x -b <search_base> -H <ldap_host> -D <bind_dn> -W "objectclass=*"
+
+EJEMPLO: $ ldapsearch -x -b "dc=iesaf,dc=org" -H ldap://10.33.1.2 -D "cn=admin,dc=iesaf,dc=org" -W “objectclass=*”
+
+BUSQUEDA DE CUENTAS 
+$ ldapsearch -x -b <search_base> -H <ldap_host> -D <bind_dn> -W "objectclass=posixAccount"
+De forma predeterminada, la consulta devolverá todos los atributos disponibles para la clase de objeto dada.
+
+EJEMPLO: $ ldapsearch -x -b "dc=iesaf,dc=org" -H ldap://10.33.1.2 -D "cn=admin,dc=iesaf,dc=org" -W “objectclass=posixAccount”
+
+Como se especificó en la sección anterior, puede agregar atributos opcionales a su consulta si desea limitar su búsqueda.
+Por ejemplo, si solo está interesado en el directorio CN, UID y home del usuario, ejecutará la siguiente búsqueda LDAP
+$ ldapsearch -x -b <search_base> -H <ldap_host> -D <bind_dn> -W "objectclass=posixAccount" cn uid homeDirectory
+
+EJEMPLO:  ldapsearch -x -b "dc=iesaf,dc=org" -H ldap://10.33.1.2 -D "cn=admin,dc=iesaf,dc=org" -W “objectclass=posixAccount” cn uid homeDirectory
+
+BUSQUEDA CON OPERADORES
+$ ldapsearch <previous_options> "(&(<condition_1>)(<condition_2>)...)"
+EJEMPLO
+$ ldapsearch -x -b "dc=iesaf,dc=org" -H ldap://10.33.1.2 -D "cn=admin,dc=iesaf,dc=org" -W “(&(objectclass=posixAccount)(uid=usuario1))”
+
+OPERADOR O
+Para tener varios filtros separados por operadores «O», incluye todas las condiciones entre paréntesis y un carácter «|» escrito en el comienzo de la consulta.
+$ ldapsearch <previous_options> "(|(<condition_1>)(<condition_2>)...)"
+
+
+Por ejemplo, para encontrar todas las entradas que tienen una «objectclass» igual a «cuenta» o de tipo «organizationalRole», ejecutar la siguiente consulta:
+$ ldapsearch <previous_options> "(|(objectclass=posixAccount)(objectclass=organizationalRole))"
+
+EJEMPLO
+$ ldapsearch -x -b "dc=iesaf,dc=org" -H ldap://10.33.1.2 -D "cn=admin,dc=iesaf,dc=org" -W “(|(objectclass=posixAccount)(objectclass=organizationalRole))”
+
+FILTRO DE NEGACION == AL & pero con !
+
+USO DE COMODINES
+Otra forma de buscar en una lista de entradas LDAP es usar caracteres comodines como el asterisco («*»). El carácter comodín asterisco se utilizará para hacer coincidir cualquier atributo que comience o termine con una subcadena dada.
+$ ldapsearch <previous_options> "(object_type)=*(object_value)"$ ldapsearch <previous_options> "(object_type)=(object_value)*"
+Como un ejemplo, digamos que usted desea encontrar todas las entradas que tienen un atributo «uid» que comienzan con la letra «c».
+$ ldapsearch <previous_options> "uid=c*"
+
+EJEMPLO $ ldapsearch -x -b "dc=iesaf,dc=org" -H ldap://10.33.1.2 -D "cn=admin,dc=iesaf,dc=org" -W “uid=c*”

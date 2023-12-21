@@ -1,0 +1,7 @@
+chmod permisos archivo
+
+Donde permisos son los permisos que se desean otorgar o quitar, y archivo es el nombre del archivo o directorio al que se le quieren modificar los permisos.
+
+Los permisos pueden ser especificados de dos maneras diferentes: con valores numéricos o con letras. En la notación numérica, cada permiso tiene un valor: r = 4, w = 2, y x = 1. Para dar un permiso determinado, se suman los valores de los permisos que se quieren otorgar. Por lo tanto, si queremos dar permiso de lectura y escritura a un archivo, sumaríamos 4 + 2= 6. Si, además, queremos dar permiso de ejecución, sumaríamos un 1. Por lo tanto, para dar permisos de lectura, escritura y ejecución a un archivo, utilizaríamos el valor numérico 7.
+
+En la notación por letras, se utilizan las mismas letras que se mencionaron anteriormente: r para lectura, w para escritura, y x para ejecución. Los tres grupos que pueden tener permisos son el propietario u, el grupo g y los usuarios que no pertenecen al propietario ni al grupo o. También es posible especificar que los cambios de permisos se refieran a todos los grupos con la letra a. Así, para dar permisos de lectura, escritura y ejecución a todos los grupos, utilizaríamos el siguiente comando:

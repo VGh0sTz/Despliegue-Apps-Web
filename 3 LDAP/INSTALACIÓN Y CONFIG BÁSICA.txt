@@ -1,0 +1,73 @@
+////////////////////////////////////////////////////////////////////
+¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡IMPORTANTE!!!!!!!!!!!!!!!!
+LDAP esta organizado en DIT (Directory Information Tree) donde cada nodo es una entrada. Cada entrada se define por un DN (Distinguished Name/Nombre) y contiene un conjunto de atributos. Este DN es una cadena que indica la ruta en el árbol de dicha entrada y será único en todo el árbol.
+EJEMPLO:
+cn=usuario1,ou=usuarios,dc=midominio,dc=es
+
+La , es el separador 
+
+«atributo=valor»
+
+dc=midominio,dc=es
+	ou=usuarios
+		cn=usuario1
+
+Donde:
+dn(Distinguished Name)=nombre unico 
+dc(Domain component)= se refiere al componente del dominio (componente/etiqueta/nombre de dns)
+ou(organizational unit)=Unidad organizativa(grupo)
+cn(Common Name)=nombre comun
+sn(Surname)=apellido
+uid(UserID)=nombre_usuario
+mail:Direccion de correo
+telephoneNumber: numero telefono
+
+///////////////////////////////////////////////////////////////////////
+GUÍA
+
+
+1.-EJECUTAR
+sudo apt install slapd ldap-utils 
+2.-VISUALIZAR CONTENIDO 
+sudo slapcat
+3.-REALIZAR CONFIG BÁSICA
+sudo dpkg-reconfigure slapd 
+//OMITIR openLDAP NO
+//REMOVE NO
+//MOVE YES
+
+
+CREAR FICHERO BASE QUE CONTENGA LOS OBJETOS DEL DIRECTORIO
+sudo nano /etc/ldap/base.ldif
+
+CARGAR EL FICHERO
+sudo ldapadd -x -D cn=admin,dc=iesaf,dc=org -W -f /etc/ldap/base.ldif
+
+
+GENERAR CONTRASEÑAS CIFRADAS
+slappasswd
+
+GENERAR ENTRADAS
+sudo nano content.ldif
+
+(grupo)
+dn: cn=devops,ou=grupos,dc=iesaf,dc=org
+objectClass: posixGroup
+cn: devops
+gidNumber: 10000
+memberUid: devops
+
+(usuario)
+dn: uid=usuario1,ou=usuarios,dc=iesaf,dc=org
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+cn: usuario1
+sn: Geek
+userPassword: "{SSHA}dasfnh2809n01nd801" //(ES LA QUE HEMOS GENERADOS ANTES)
+loginShell: /bin/bash
+uidNumber: 10000
+gidNumber: 10000
+homeDirectory: /home/usuario1
+
+sudo ldapadd -x -D cn=admin,dc=iesaf,dc=org -W -f /etc/ldap/content.ldif

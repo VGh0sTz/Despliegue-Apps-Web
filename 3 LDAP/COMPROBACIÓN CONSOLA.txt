@@ -1,0 +1,42 @@
+CONFIGURAR CLIENTE 
+
+sudo apt update
+sudo apt install libnss-ldap libpam-ldap ldap-utils
+
+//SE MUESTRA LA PANTALLA
+
+ldap://ipserver
+dc=iesaf,dc=org
+3
+Si
+No
+cn=admin,dc=iesaf,dc=org
+contraseña que pusimos en slappasswd
+
+
+//FINALIZA
+
+//MODIFICAMOS ARCHIVOS CORRESPONDIENTES
+/etc/nsswitch.conf
+-----> passd: ... ... ldap
+       group: ... ... ldap
+
+/etc/pam.d/common-password
+-----> ELIMINAR use_authtok
+
+/etc/pam.d/common-session
+-----> (al final) session optional pam_mkhomedir.so skel=/etc/skel umask=077
+
+REALIZAR COMPROBACIONES (BUSQUEDA)
+ldapsearch -x -H ldap://10.33.1.2 -b "dc=iesaf,dc=org"
+
+--> Abir terminal local Ctrl+Alt+f5 iniciamos sesion con el usuario1 de ldap ya creado
+//REALIZA CONSULTAS
+
+id
+pwd
+ls -l /home
+
+
+Ctrl+Alt+F2 para salir
+(cambiar usuario su usuario1)

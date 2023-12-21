@@ -1,0 +1,21 @@
+1.- CAMBIARLE A LA MAQUINA CLIENTE EL DNS DE LOS SERVIDORES (normal y secundario)
+
+cd /etc/netplan [1.33.1.2,1.33.1.10] 
+y 
+cd /etc/resolv.conf (nameserver 1.33.1.2)
+
+
+2.- EJECUTAR dig @10.33.1.2 mi.dominio.org
+para ver que en flags aparece aa
+(en ambas maquinas [servidor1+servidor2])
+
+3.-SOLICITAR COPIA COMPLETA DE ZONA DESDE CLIENTE
+dig @10.33.1.2 iesaf.org axfr
+(funciono cliente-secundario)
+
+4.- VER QUE SERVERS RESPONDEN ABAJO 
+dig andreu.iesaf.org
+
+EJEMPLO:
+ --- SERVFER 10.33.1.2
+

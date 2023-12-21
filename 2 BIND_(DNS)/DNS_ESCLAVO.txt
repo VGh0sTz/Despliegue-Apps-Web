@@ -1,0 +1,54 @@
+CLONAR Y CAMBIAR IP Y HOSTNAME DE MAQUINA
+
+CAMBIAR LA DEFINICION DE ZONAS ESCLAVO (/etc/bind/named.conf.local)
+
+include "/etc/bind/zones.rfc1918";
+zone "iesaf.org" {
+   type slave;
+   file "/var/cache/bind/db.iesaf.org";
+   masters { 10.33.1.2; };
+};
+zone "1.33.10.in-addr.arpa" {
+   type slave;
+   file "/var/cache/bind/db.10.33.1";
+   masters { 10.33.1.2; };
+};
+
+
+CAMBIAR LAS ZONAS EN MAESTRO: 
+
+(//ZONAS)
+include "/etc/bind/zones.rfc1918";
+zone "iesaf.org" {
+   type master;
+   file "/etc/bind/db.iesaf.org";
+   allow-transfer { 10.33.1.10; };
+   also-notify { 10.33.1.10; };
+};
+zone "1.33.10.in-addr.arpa" {
+   type master;
+   file "/etc/bind/db.10.33.1";
+   allow-transfer { 10.33.1.10; };
+   also-notify { 10.33.1.10; };
+};
+
+(//directa)
+@  IN  NS  esclavo.iesaf.org.
+esclavo  IN  A   10.33.1.10
+
+(//inversa)
+10  IN  PTR    esclavo.iesaf.org.
+@  IN  NS     esclavo.iesaf.org.
+
+
+VERIFICAR LAS ZONAS Y SU CONFIGURACIÓN
+sudo named-checkzone iesaf.org /etc/bind/db.iesaf.org
+
+y 
+
+sudo named-checkconf named.conf
+
+VER TRANSFERENCIA DE ZONAS 
+
+$sudo cat /var/log/syslog | grep named | grep transfer
+
